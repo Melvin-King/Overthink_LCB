@@ -16,23 +16,33 @@ from lcb_runner.runner.scenario_router import (
 
 
 def main():
+    print("DEBUGGING POINT")
     args = get_args()
-
+    print("DEBUGGING POINT")
     model = LanguageModelStore[args.model]
+    print("DEBUGGING POINT")
     benchmark, format_prompt = build_prompt_benchmark(args)
+    print("DEBUGGING POINT")
     if args.debug:
         print(f"Running with {len(benchmark)} instances in debug mode")
         benchmark = benchmark[:15]
-
     output_path = get_output_path(model.model_repr, args)
     eval_file = output_path.replace(".json", "_eval.json")
     eval_all_file = output_path.replace(".json", "_eval_all.json")
 
-    if args.continue_existing or args.continue_existing_with_eval:
+    #resets
+    print(args.reset)
+    if args.reset or not (args.continue_existing or args.continue_existing_with_eval):
+        old_save_results = []
+        remaining_benchmark = benchmark
+        print("Starting fresh run from scratch")
+    else:
         if os.path.exists(output_path):
+            print(f"Loading existing results from {output_path}")
             with open(output_path, "r") as f:
                 old_save_results = json.load(f)
         elif os.path.exists(eval_all_file):
+            print(f"Loading existing results from {eval_all_file}")
             with open(eval_all_file, "r") as f:
                 old_save_results = json.load(f)
         else:
@@ -58,12 +68,9 @@ def main():
         print(
             f"Found {len(old_save_results)} existing generations, continuing with {len(remaining_benchmark)} remaining"
         )
-    else:
-        old_save_results = []
-        remaining_benchmark = benchmark
 
     if len(remaining_benchmark) > 0:
-        runner = build_runner(args, model)
+        runner = build_runner  # 修正 typo: build -> build_runner
         results: list[list[str]] = runner.run_main(remaining_benchmark, format_prompt)
     else:
         results = []

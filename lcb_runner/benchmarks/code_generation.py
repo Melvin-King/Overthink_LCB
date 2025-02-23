@@ -8,6 +8,8 @@ from dataclasses import dataclass
 
 from datasets import load_dataset
 
+from ..utils.token_utils import count_tokens, get_tokenizer
+
 
 class Platform(Enum):
     LEETCODE = "leetcode"
@@ -52,6 +54,7 @@ class CodeGenerationProblem:
     public_test_cases: list[Test]
     private_test_cases: list[Test]
     metadata: dict
+    model_name: str = "Qwen/QwQ-32B-Preview" #melvin
 
     def __post_init__(self):
         self.platform = Platform(self.platform)
@@ -76,6 +79,10 @@ class CodeGenerationProblem:
         self.metadata = json.loads(self.metadata)  # type: ignore
 
     def insert_output(self, output_list: list[str], code_list: list[str]) -> dict:
+        token_counts = [count_tokens(code, self.model_name) for code in code_list] #melvin
+
+        print(token_counts)
+
         return {
             "question_title": self.question_title,
             "question_content": self.question_content,

@@ -118,6 +118,9 @@ def get_args():
         help="Folder name to save the custom output results (output file folder modified if None)",
     )
     parser.add_argument("--dtype", type=str, default="bfloat16", help="Dtype for vllm")
+    parser.add_argument(
+        "--reset", action="store_true", help="Reset and start from scratch, ignoring existing results"
+    )
 
     args = parser.parse_args()
 
