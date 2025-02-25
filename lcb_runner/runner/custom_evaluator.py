@@ -16,6 +16,7 @@ def main():
     args = get_args()
 
     benchmark, _ = build_prompt_benchmark(args)
+    benchmark = benchmark[:15] #temporary for testing -- by melvin
 
     with open(args.custom_output_file, "r") as f:
         custom_outputs = json.load(f)
@@ -72,6 +73,8 @@ def main():
     )
 
     metrics = get_metrics(args.scenario, args, benchmark, combined_results)
+    print("current metric:", metrics)
+
     graded = extract_instance_results(metrics[1])
 
     if args.scenario == Scenario.codegeneration:

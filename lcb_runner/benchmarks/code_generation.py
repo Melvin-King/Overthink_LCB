@@ -80,8 +80,7 @@ class CodeGenerationProblem:
 
     def insert_output(self, output_list: list[str], code_list: list[str]) -> dict:
         token_counts = [count_tokens(code, self.model_name) for code in code_list] #melvin
-
-        print(token_counts)
+        print("tokens:", token_counts)
 
         return {
             "question_title": self.question_title,
